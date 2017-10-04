@@ -699,3 +699,16 @@ objectInfo(objectInfo)
 # }
 
 
+#Vectors
+(1:20)[c(TRUE, FALSE)]  # odd numbers, but how and why?
+#The how an why of this is that the vector of numbers 1 up to 20 is filtered
+#by the alternating boolean flags. [TRUE, FALSE] is recycled, such that TRUE aligns to odd numbers, and FALSE to even.
+#The even numbers are then omitted from the result.
+
+summary(f)["Median"]
+summary(f)[c("Max", "Min")]  #mistyped - fixed by looking at summary(f)
+summary(f) #found the correct strings are "Min." and "Max."
+summary(f)[c("Max.", "Min.")]
+
+#[END]
+
