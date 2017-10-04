@@ -1,7 +1,7 @@
 # RPR-Syntax basics
 #
 # Purpose: Practice the basics of R syntax, writing a script under
-#verision control
+#          verision control
 #
 # Note:    This script lives on Github:
 #          https://github.com/harrig12/BCH441
