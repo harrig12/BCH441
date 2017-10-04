@@ -258,6 +258,16 @@ objectInfo(as.character(pi))
 # mode:    character
 # typeof:  character
 # class:   character
+
+#actual:
+# object contents:[1] "3.14159265358979"
+#
+# structure of object:
+#     chr "3.14159265358979"
+#
+# mode:    character
+# typeof:  character
+# class:   character
 objectInfo(Inf)
 #expected:
 # object contents:[1] Inf
