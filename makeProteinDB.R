@@ -15,7 +15,7 @@
 setwd("./ABC-units")
 source("./scripts/ABC-createRefDB.R")
 
-myDB <- dbAddProtein(    myDB, fromJSON("/Users/cait/Documents/BCH441/data/MBP1_CALCA.json"))
-myDB <- dbAddTaxonomy(   myDB, fromJSON("/Users/cait/Documents/BCH441/data/CALCAtaxonomy.json"))
+myDB <- dbAddProtein(    myDB, fromJSON("/Users/cait/Documents/BCH441/data/MBP1_CLACA.json"))
+myDB <- dbAddTaxonomy(   myDB, fromJSON("/Users/cait/Documents/BCH441/data/CLACAtaxonomy.json"))
 
 #[END]
