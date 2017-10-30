@@ -34,9 +34,6 @@ if (!require(igraph)) {
   library(igraph)
 }
 
-#create an igraph object from scCCnet
-myG <- graph_from_edgelist(as.matrix(scCCnet[-3]), directed = F)
-
 igraphToSize <- function(G){
   # Find the difference in sizes between the largest and second largest communities
   # in graph G
@@ -64,9 +61,31 @@ igraphToRIgraph <- function(G){
   return(sample_degseq(myDegree, method = "vl"))
 }
 
-#what is the size gap in our scCCnet based graph between the 1st and 2nd largest
-#communities?
+#Create an igraph object from scCCnet
 set.seed(1234765)
+myG <- graph_from_edgelist(as.matrix(scCCnet[-3]), directed = F)
+
+#Plot the scCCnet network
+#Modified from the FND-MAT-Graphs_and_networks.R Version 1.0
+
+myGxy <- layout_with_graphopt(myG, charge = 0.0007, mass=60, spring.constant = 0.5)
+
+oPar <- par(mar= rep(0,4)) # Turn margins off
+plot(myG,
+     layout = myGxy,
+     rescale = F,
+     xlim = c(min(myGxy[,1]) * 0.99, max(myGxy[,1]) * 1.01),
+     ylim = c(min(myGxy[,2]) * 0.99, max(myGxy[,2]) * 1.01),
+     vertex.color=heat.colors(max(degree(myG)+1))[degree(myG)+1],
+     vertex.size = 800 + (30 * degree(myG)),
+     vertex.label = NA)
+par(oPar)
+
+#We can see that there are several fairly well connected nodes with high degree.
+
+#What is the size gap in our scCCnet based graph between the 1st and 2nd 
+#largest communities?
+
 igraphToSize(myG)
 
 #The size gap is 9. How does this compare to a randomly generated graph?
@@ -77,7 +96,7 @@ rG <- igraphToRIgraph(myG)
 rGSamples <- replicate(1000, igraphToSize(rG))
 
 #Create a histogram of size gaps
-
+#Modified from the FND-MAT-Graphs_and_networks.R Version 1.0
 brk <- seq(min(rGSamples)-0.5, max(rGSamples)+0.5, by=1)
 hist(rGSamples, breaks = brk, col="red",
      xlim = c(-1,max(rGSamples)), xaxt = "n",
