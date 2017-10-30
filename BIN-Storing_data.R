@@ -3,11 +3,13 @@
 # Purpose: A Bioinformatics Course:
 #              R code accompanying the BIN-Storing_data unit
 #
-# Version: 1.1
+# Version: 1.2
 #
-# Date:    2017  10  08
+# Date:    2017  10  09
 # Author:  Boris Steipe (boris.steipe@utoronto.ca)
+# Author:  Cait Harrigan (cait.harrigan@mail.utoronto.ca)
 #
+# V 1.2    Add solutions to challenges
 # V 1.1    Add instructions to retrieve UniProt ID from ID mapping service.
 # V 1.0    First live version, complete rebuilt. Now using JSON data sources.
 # V 0.1    First code copied from BCH441_A03_makeYFOlist.R
@@ -423,6 +425,7 @@ str(myDB)
 # a column with that vector.
 
 sel <- myDB$protein$name == "MBP1_SACCE"
+
 nchar(myDB$protein$sequence[sel])
 
 
