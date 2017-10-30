@@ -69,7 +69,7 @@ myG <- graph_from_edgelist(as.matrix(scCCnet[-3]), directed = F)
 #Modified from the FND-MAT-Graphs_and_networks.R Version 1.0
 
 comms <- cluster_infomap(myG)
-myGxy <- layout_with_graphopt(myG, charge = 0.0007, mass=60, spring.constant = 0.5)
+myGxy <- layout_with_graphopt(myG, charge = 0.0017, mass=100, spring.constant = .5)
 
 oPar <- par(mar= rep(0,4)) # Turn margins off
 plot(myG,
@@ -78,13 +78,15 @@ plot(myG,
      xlim = c(min(myGxy[,1]) * 0.99, max(myGxy[,1]) * 1.01),
      ylim = c(min(myGxy[,2]) * 0.99, max(myGxy[,2]) * 1.01),
      vertex.color=rainbow(max(membership(comms)+1))[membership(comms)+1],
-     vertex.size = 700 + (50 * degree(myG)),
+     vertex.size = 700 + (90 * degree(myG)),
      vertex.label = NA)
 par(oPar)
 
+#Size of a node increases with degree, colour is dictated by community membership.
 #We can see that there are several fairly well connected nodes with high degree.
 #These nodes tend to be members of larger communities - this makes sense biologically,
-#we could expect a protein in a group of many interacting proteins has many interactions
+#we could expect a protein in a group of many interacting proteins has many interactions.
+#There are two distinctly large and well connected communities.
 
 #What is the size gap in our scCCnet based graph between the 1st and 2nd
 #largest communities?
