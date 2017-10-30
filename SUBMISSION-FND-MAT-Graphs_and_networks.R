@@ -85,7 +85,7 @@ par(oPar)
 #Size of a node increases with degree, colour is dictated by community membership.
 #We can see that there are several fairly well connected nodes with high degree.
 #These nodes tend to be members of larger communities - this makes sense biologically,
-#we could expect a protein in a group of many interacting proteins has many interactions.
+#we could expect a protein in a group of many interacting proteins shares many interactions.
 #There are two distinctly large and well connected communities.
 
 #What is the size gap in our scCCnet based graph between the 1st and 2nd
@@ -133,6 +133,7 @@ boxplot.matrix(samples, col = c("red", "cornflowerblue"),
 #largest community in the scCCnet graph and randomly generated graph with the same degree.
 #They likely share a similar community structure. Since the edges in the scCCnet graph are
 #based on a high confidence interaction score, this indicates that the community
-#structure is not related to the biological function of these genes.
+#structure is likely not related to the biological function of these genes, but rather
+#to the degree of distribution of the graph.
 
 #[END]
