@@ -27,7 +27,7 @@
 # ==============================================================================
 
 #load data prepared from STRING database
-load("./data/scCCnet.RData")
+#load("./data/scCCnet.RData")
 
 if (!require(igraph)) {
   install.packages("igraph")
