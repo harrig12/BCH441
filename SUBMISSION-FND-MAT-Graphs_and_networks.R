@@ -27,7 +27,7 @@
 # ==============================================================================
 
 #load data prepared from STRING database
-#load("./data/scCCnet.RData")
+load("./data/scCCnet.RData")
 
 if (!require(igraph)) {
   install.packages("igraph")
@@ -62,12 +62,13 @@ igraphToRIgraph <- function(G){
 }
 
 #Create an igraph object from scCCnet
-set.seed(1234765)
+set.seed(12543)
 myG <- graph_from_edgelist(as.matrix(scCCnet[-3]), directed = F)
 
-#Plot the scCCnet network
+#Plot the scCCnet network according to community membership
 #Modified from the FND-MAT-Graphs_and_networks.R Version 1.0
 
+comms <- cluster_infomap(myG)
 myGxy <- layout_with_graphopt(myG, charge = 0.0007, mass=60, spring.constant = 0.5)
 
 oPar <- par(mar= rep(0,4)) # Turn margins off
@@ -76,16 +77,18 @@ plot(myG,
      rescale = F,
      xlim = c(min(myGxy[,1]) * 0.99, max(myGxy[,1]) * 1.01),
      ylim = c(min(myGxy[,2]) * 0.99, max(myGxy[,2]) * 1.01),
-     vertex.color=heat.colors(max(degree(myG)+1))[degree(myG)+1],
-     vertex.size = 800 + (30 * degree(myG)),
+     vertex.color=rainbow(max(membership(comms)+1))[membership(comms)+1],
+     vertex.size = 700 + (50 * degree(myG)),
      vertex.label = NA)
 par(oPar)
 
 #We can see that there are several fairly well connected nodes with high degree.
+#These nodes tend to be members of larger communities - this makes sense biologically,
+#we could expect a protein in a group of many interacting proteins has many interactions
 
-#What is the size gap in our scCCnet based graph between the 1st and 2nd 
+#What is the size gap in our scCCnet based graph between the 1st and 2nd
 #largest communities?
-
+set.seed(1234765)
 igraphToSize(myG)
 
 #The size gap is 9. How does this compare to a randomly generated graph?
@@ -101,7 +104,7 @@ brk <- seq(min(rGSamples)-0.5, max(rGSamples)+0.5, by=1)
 hist(rGSamples, breaks = brk, col="red",
      xlim = c(-1,max(rGSamples)), xaxt = "n",
      main = "1000 samples of randomly generated graph",
-     xlab = "Size difference between largest and second largest community", ylab = "Frequency") 
+     xlab = "Size difference between largest and second largest community", ylab = "Frequency")
 axis(side = 1, at = 0:max(rGSamples))
 
 #Histogram of the 1000 samples shows 9 is a relativly common size gap. Lets compare
@@ -124,10 +127,10 @@ boxplot.matrix(samples, col = c("red", "cornflowerblue"),
                ylab = "Size difference between largest and second largest community",
                xlab = "Origin")
 
-#There doesn't seem to be any real difference in the size gap between 1st and 2nd 
+#There doesn't seem to be any real difference in the size gap between 1st and 2nd
 #largest community in the scCCnet graph and randomly generated graph with the same degree.
 #They likely share a similar community structure. Since the edges in the scCCnet graph are
-#based on a high confidence interaction score, this indicates that the community 
+#based on a high confidence interaction score, this indicates that the community
 #structure is not related to the biological function of these genes.
 
 #[END]
