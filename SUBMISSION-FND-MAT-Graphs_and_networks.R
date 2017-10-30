@@ -3,6 +3,9 @@
 # Purpose:  A Bioinformatics Course:
 #              R code accompanying the FND-MAT-Graphs_and_networks unit.
 #
+# Note:    This script lives on Github:
+#          https://github.com/harrig12/BCH441
+#
 # Version:  1.0
 #
 # Date:     2017  10  27
@@ -11,7 +14,7 @@
 # Versions:
 #           1.0    First code
 #
-#Task:
+# Task:
 #           Assess the community structure of scCCnet by comparing it with random
 #           graphs with the same distribution degree. In particular:
 #           1) Write a function that takes an igraph graph as input and outputs the
