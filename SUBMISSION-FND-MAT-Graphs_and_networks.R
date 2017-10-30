@@ -77,19 +77,25 @@ myGSamples <- replicate(1000, igraphToSize(myG))
 
 
 brk <- seq(min(rGSamples)-0.5, max(rGSamples)+0.5, by=1)
-hist(rGSamples, breaks = brk, col="coral2",
+hist(rGSamples, breaks = brk, col="red",
      xlim = c(-1,max(rGSamples)), xaxt = "n",
-     main = "1000 samples of randomly generated graph", xlab = "Size difference between largest and second largest community", ylab = "Number")  # plot histogram
+     main = "1000 samples of randomly generated graph",
+     xlab = "Size difference between largest and second largest community", ylab = "Frequency")  # plot histogram
 axis(side = 1, at = 0:max(rGSamples))
 
 brk <- seq(min(myGSamples)-0.5, max(myGSamples)+0.5, by=1)
 hist(myGSamples, breaks = brk, col="cornflowerblue",
      xlim = c(-1,max(myGSamples)), xaxt = "n",
-     main = "1000 samples of scCCnet generated graph", xlab = "Size difference between largest and second largest community", ylab = "Number")  # plot histogram
+     main = "1000 samples of scCCnet generated graph",
+     xlab = "Size difference between largest and second largest community", ylab = "Freqency")  # plot histogram
 axis(side = 1, at = 0:max(myGSamples))
 
 
 #box plot of community structures
-
+samples <- cbind(rGSamples, myGSamples)
+boxplot.matrix(samples, col = c("red", "cornflowerblue"),
+               main = "Community structure of 1000 samples",
+               ylab = "Size difference between largest and second largest community",
+               xlab = "Origin")
 
 #[END]
