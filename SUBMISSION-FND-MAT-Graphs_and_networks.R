@@ -53,49 +53,62 @@ igraphToSize <- function(G){
   return(sizesOrdered[1] - sizesOrdered[2])
 }
 
-igraphToSize(myG)
-
 igraphToRIgraph <- function(G){
   # Make a random graph of same degree as an input igraph G
   # Parameters:
   #   G: an igraph
   #
-  # Value: an undirected graph with same degree as G
+  # Value: an undirected igraph with same degree as G
 
   myDegree <- as.vector(degree(myG))
   return(sample_degseq(myDegree, method = "vl"))
 }
 
-
-#histograms of both community structures for comparison
+#what is the size gap in our scCCnet based graph between the 1st and 2nd largest
+#communities?
 set.seed(1234765)
+igraphToSize(myG)
+
+#The size gap is 9. How does this compare to a randomly generated graph?
 
 rG <- igraphToRIgraph(myG)
 
+#Produce 1000 results
 rGSamples <- replicate(1000, igraphToSize(rG))
-myGSamples <- replicate(1000, igraphToSize(myG))
 
+#Create a histogram of size gaps
 
 brk <- seq(min(rGSamples)-0.5, max(rGSamples)+0.5, by=1)
 hist(rGSamples, breaks = brk, col="red",
      xlim = c(-1,max(rGSamples)), xaxt = "n",
      main = "1000 samples of randomly generated graph",
-     xlab = "Size difference between largest and second largest community", ylab = "Frequency")  # plot histogram
+     xlab = "Size difference between largest and second largest community", ylab = "Frequency") 
 axis(side = 1, at = 0:max(rGSamples))
+
+#Histogram of the 1000 samples shows 9 is a relativly common size gap. Lets compare
+#with a histogam of 1000 samples of the scCCnet generated graph
+
+myGSamples <- replicate(1000, igraphToSize(myG))
 
 brk <- seq(min(myGSamples)-0.5, max(myGSamples)+0.5, by=1)
 hist(myGSamples, breaks = brk, col="cornflowerblue",
      xlim = c(-1,max(myGSamples)), xaxt = "n",
      main = "1000 samples of scCCnet generated graph",
-     xlab = "Size difference between largest and second largest community", ylab = "Freqency")  # plot histogram
+     xlab = "Size difference between largest and second largest community", ylab = "Freqency")
 axis(side = 1, at = 0:max(myGSamples))
 
 
-#box plot of community structures
+#Box plot of community structures to see these side to side
 samples <- cbind(rGSamples, myGSamples)
 boxplot.matrix(samples, col = c("red", "cornflowerblue"),
                main = "Community structure of 1000 samples",
                ylab = "Size difference between largest and second largest community",
                xlab = "Origin")
+
+#There doesn't seem to be any real difference in the size gap between 1st and 2nd 
+#largest community in the scCCnet graph and randomly generated graph with the same degree.
+#They likely share a similar community structure. Since the edges in the scCCnet graph are
+#based on a high confidence interaction score, this indicates that the community 
+#structure is not related to the biological function of these genes.
 
 #[END]
