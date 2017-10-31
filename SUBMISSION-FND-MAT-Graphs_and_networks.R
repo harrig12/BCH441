@@ -104,7 +104,7 @@ par(oPar)
 set.seed(1234)
 igraphToSize(myG)
 
-#The size gap is 9. How does this compare to a randomly generated graph?
+#The size gap is 6. How does this compare to a randomly generated graph?
 
 #Produce 1000 random graphs
 rGs <- list()
@@ -125,10 +125,13 @@ hist(rGSamples, breaks = brk, col="coral2",
      xlab = "Size difference between largest and second largest community", ylab = "Frequency")
 axis(side = 1, at = min(rGSamples):max(rGSamples))
 
+#6 is very rarely, if ever the size gap between the first and second largest communities
+#in a randomly generated graph.
+
 #Lets compare with a histogam of 1000 samples of the scCCnet generated graph
 #This represents the distribution only one graph, where differing community
 #structure comes solely from the call to cluster_infomap(). However, the mean
-#may still be meaningful to compare with the random graphs
+#will be meaningful to compare with the random graph samples
 
 myGSamples <- replicate(1000, igraphToSize(myG))
 
@@ -151,13 +154,16 @@ boxplot.matrix(samples, col = c("coral2", "cornflowerblue"),
 t.test(rGSamples, myGSamples)
 
 #We cannot accept the null hypothesis; there is a significant difference in the means of
-#the two groups. The average size gap in the 1st and 2nd largest community for random
+#the two groups.
+
+#The average size gap in the 1st and 2nd largest community for random
 #graphs sharing the same degree as the scCCnet network is 243.120, versus scCCnet's 7.236.
 #They do not seem to share a similar community structure, the scCCnet community structure
 #is distictly difference from that of a random graph of the same degree.
-#This implies that the community structure of the cell cyle related proteins in scCCnet
+#This implies that the community structure of the cell cycle related proteins in scCCnet
 #is related to their biological function. This is expected, as the edges in the graph
 #were generated from the interaction scores of these proteins. We can anticipate
 #that interacting proteins have some shared biological function towards the cell cycle.
 
 #[END]
+
