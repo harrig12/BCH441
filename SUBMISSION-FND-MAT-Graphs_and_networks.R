@@ -46,10 +46,16 @@ igraphToSize <- function(G){
   # Value: an integer
 
   #get cluster sizes
-  sizes <- sizes(cluster_infomap(myG))
+  sizes <- sizes(cluster_infomap(G))
   #order sizes as a vector
   sizesOrdered <- as.vector(sizes)
+
   #find difference between first and second largest community
+  #in some cases there is only one community
+  if (length(sizesOrdered) == 1){
+    return(sizesOrdered[1])
+  }
+
   return(sizesOrdered[1] - sizesOrdered[2])
 }
 
@@ -60,11 +66,12 @@ igraphToRIgraph <- function(G){
   #
   # Value: an undirected igraph with same degree as G
 
-  myDegree <- as.vector(degree(myG))
+  myDegree <- degree(G)
   return(sample_degseq(myDegree, method = "vl"))
 }
 
 #Create an igraph object from scCCnet
+#Exclude the combined scores
 set.seed(12543)
 myG <- graph_from_edgelist(as.matrix(scCCnet[-3]), directed = F)
 
@@ -74,7 +81,7 @@ myG <- graph_from_edgelist(as.matrix(scCCnet[-3]), directed = F)
 comms <- cluster_infomap(myG)
 myGxy <- layout_with_graphopt(myG, charge = 0.0017, mass=100, spring.constant = .5)
 
-oPar <- par(mar= rep(0,4)) # Turn margins off
+oPar <- par(mar= c(0,4,4,4)) # Turn margins off
 plot(myG,
      layout = myGxy,
      rescale = F,
@@ -82,38 +89,46 @@ plot(myG,
      ylim = c(min(myGxy[,2]) * 0.99, max(myGxy[,2]) * 1.01),
      vertex.color=rainbow(max(membership(comms)+1))[membership(comms)+1],
      vertex.size = 700 + (90 * degree(myG)),
-     vertex.label = NA)
+     vertex.label = NA,
+     main = "scCCnet Network")
 par(oPar)
 
 #Size of a node increases with degree, colour is dictated by community membership.
 #We can see that there are several fairly well connected nodes with high degree.
 #These nodes tend to be members of larger communities - this makes sense biologically,
-#we could expect a protein in a group of many interacting proteins shares many interactions.
+#we could expect a protein in a large group of interacting proteins has many interactions.
 #There are two distinctly large and well connected communities.
 
 #What is the size gap in our scCCnet based graph between the 1st and 2nd
 #largest communities?
-set.seed(1234765)
+set.seed(1234)
 igraphToSize(myG)
 
 #The size gap is 9. How does this compare to a randomly generated graph?
 
-rG <- igraphToRIgraph(myG)
+#Produce 1000 random graphs
+rGs <- list()
+for (i in seq(1000)){
+  rGs[[i]] <- igraphToRIgraph(myG)
+}
 
-#Produce 1000 results
-rGSamples <- replicate(1000, igraphToSize(rG))
+#Find the size gap for each graph
+rGSamples <- lapply(rGs, igraphToSize)
+rGSamples <- unlist(rGSamples)
 
-#Create a histogram of size gaps
+#Create a histogram of size gaps in randomly generated graphs
 #Modified from the FND-MAT-Graphs_and_networks.R Version 1.0
 brk <- seq(min(rGSamples)-0.5, max(rGSamples)+0.5, by=1)
-hist(rGSamples, breaks = brk, col="red",
-     xlim = c(-1,max(rGSamples)), xaxt = "n",
+hist(rGSamples, breaks = brk, col="coral2",
+     xlim = c(min(rGSamples)-1,max(rGSamples)), xaxt = "n",
      main = "1000 samples of randomly generated graph",
      xlab = "Size difference between largest and second largest community", ylab = "Frequency")
-axis(side = 1, at = 0:max(rGSamples))
+axis(side = 1, at = min(rGSamples):max(rGSamples))
 
-#Histogram of the 1000 samples shows 9 is a relativly common size gap. Lets compare
-#with a histogam of 1000 samples of the scCCnet generated graph
+#Lets compare with a histogam of 1000 samples of the scCCnet generated graph
+#This represents the distribution only one graph, where differing community
+#structure comes solely from the call to cluster_infomap(). However, the mean
+#may still be meaningful to compare with the random graphs
 
 myGSamples <- replicate(1000, igraphToSize(myG))
 
@@ -127,16 +142,22 @@ axis(side = 1, at = 0:max(myGSamples))
 
 #Box plot of community structures to see these side to side
 samples <- cbind(rGSamples, myGSamples)
-boxplot.matrix(samples, col = c("red", "cornflowerblue"),
+boxplot.matrix(samples, col = c("coral2", "cornflowerblue"),
                main = "Community structure of 1000 samples",
                ylab = "Size difference between largest and second largest community",
                xlab = "Origin")
 
-#There doesn't seem to be any real difference in the size gap between 1st and 2nd
-#largest community in the scCCnet graph and randomly generated graph with the same degree.
-#They likely share a similar community structure. Since the edges in the scCCnet graph are
-#based on a high confidence interaction score, this indicates that the community
-#structure is likely not related to the biological function of these genes, but rather
-#to the degree of distribution of the graph.
+#Test difference in mean between scCCnet and random graph samples for significance
+t.test(rGSamples, myGSamples)
+
+#We cannot accept the null hypothesis; there is a significant difference in the means of
+#the two groups. The average size gap in the 1st and 2nd largest community for random
+#graphs sharing the same degree as the scCCnet network is 243.120, versus scCCnet's 7.236.
+#They do not seem to share a similar community structure, the scCCnet community structure
+#is distictly difference from that of a random graph of the same degree.
+#This implies that the community structure of the cell cyle related proteins in scCCnet
+#is related to their biological function. This is expected, as the edges in the graph
+#were generated from the interaction scores of these proteins. We can anticipate
+#that interacting proteins have some shared biological function towards the cell cycle.
 
 #[END]
