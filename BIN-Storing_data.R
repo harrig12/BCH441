@@ -3,13 +3,11 @@
 # Purpose: A Bioinformatics Course:
 #              R code accompanying the BIN-Storing_data unit
 #
-# Version: 1.2
+# Version: 1.1
 #
-# Date:    2017  10  09
+# Date:    2017  10  08
 # Author:  Boris Steipe (boris.steipe@utoronto.ca)
-# Author:  Cait Harrigan (cait.harrigan@mail.utoronto.ca)
 #
-# V 1.2    Add solutions to challenges
 # V 1.1    Add instructions to retrieve UniProt ID from ID mapping service.
 # V 1.0    First live version, complete rebuilt. Now using JSON data sources.
 # V 0.1    First code copied from BCH441_A03_makeYFOlist.R
@@ -425,7 +423,6 @@ str(myDB)
 # a column with that vector.
 
 sel <- myDB$protein$name == "MBP1_SACCE"
-
 nchar(myDB$protein$sequence[sel])
 
 
@@ -559,6 +556,7 @@ myDB$taxonomy$species[sel]
 #
 # - Validate your two files online at https://jsonlint.com/
 
+#had to put quotes around every line in my MBP1_CLACA.json file - both files are now valid
 
 # ==   3.3  Create an R script to create the database  =========================
 
@@ -573,7 +571,9 @@ myDB$taxonomy$species[sel]
 #     myDB <- dbAddTaxonomy(   myDB, fromJSON("MYSPEtaxonomy.json"))
 #
 # - save the file and source() it:
-#     source("makeProteinDB.R")
+
+setwd("/Users/cait/Documents/BCH441/")
+source("./makeProteinDB.R")
 
 # This command needs to be executed whenever you recreate
 # the database. In particular, whenver you have added or modified data
