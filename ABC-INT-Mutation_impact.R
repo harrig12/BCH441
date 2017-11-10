@@ -41,3 +41,40 @@
 
 load(file = "./data/ABC-INT-Mutation_impact.RData")
 
+pointMutate <- function(gene){
+  # Create a single point mutation in passed gene
+  # Parameters:
+  #   gene: a caracter vector of codons
+  #
+  # Value: a caracter vector of codons, differing by one letter from the passed gene
+
+  iCodon <- sample(length(gene), 1) #choose a codon
+  iNT <- sample(3, 1) #choose a nucleotide within the codon to mutate
+
+  myCodon <- unlist(strsplit(gene[iCodon], ""))
+  myNT <- myCodon[iNT]
+  nts <- c("A", "T", "C", "G")
+
+  mutantNT <- sample(nts[nts != myNT], 1) #choose a nucleotide to mutate to
+  myCodon[iNT] <- mutantNT #mutate codon
+
+  myCodon <- paste0(myCodon, collapse = "")
+  gene[iCodon] <- myCodon #place mutant codon in gene
+  return(gene)
+
+}
+
+#test_file("../test_pointMutate.R")
+
+detectMutationType <- function(wt, mutant){
+  # Return whether a mutated sequence is missense, silent, or nonsense
+  # Parameters:
+  #   wt: a character vector of codons
+  #   mutant: a chracter vector of codons
+  #
+  # Value: a string indicating the type of mutation
+
+}
+
+N <- 100000
+
