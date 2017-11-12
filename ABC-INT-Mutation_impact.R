@@ -41,6 +41,19 @@
 
 load(file = "./data/ABC-INT-Mutation_impact.RData")
 
+if (! require(Biostrings, quietly=TRUE)) {
+  if (! exists("biocLite")) {
+    source("https://bioconductor.org/biocLite.R")
+  }
+  biocLite("Biostrings")
+  library(Biostrings)
+}
+
+if (! require(testthat, quietly=TRUE)) {
+  install.packages("testthat")
+  library(testthat)
+}
+
 pointMutate <- function(gene){
   # Create a single point mutation in passed gene
   # Parameters:
@@ -64,17 +77,71 @@ pointMutate <- function(gene){
 
 }
 
-#test_file("../test_pointMutate.R")
+test_file("../test_pointMutate.R")
 
-detectMutationType <- function(wt, mutant){
+detectMutationType <- function(wt, mutant, code=GENETIC_CODE){
   # Return whether a mutated sequence is missense, silent, or nonsense
   # Parameters:
-  #   wt: a character vector of codons
+  #   wt: a character vector of DNA codons
   #   mutant: a chracter vector of codons
+  #   code: an optional reference genetic code
   #
   # Value: a string indicating the type of mutation
+  #
 
+  if (length(wt) != length(mutant)){
+    stop("input lengths may not differ")
+  }
+
+  if (all(wt == mutant)){
+    stop("strings match, no mutant found")
+  }
+
+  #translate the input DNA sequences
+  wtPeptide <- as.character(translate(DNAString(paste0(wt, collapse = "")),
+                                      genetic.code = code))
+  mutantPeptide <- as.character(translate(DNAString(paste0(mutant, collapse = "")),
+                                          genetic.code = code))
+
+  if (sum(adist(wtPeptide, mutantPeptide)) < 1){ #no mutation in peptide
+    return("silent")
+  }
+
+  if (length(unlist(strsplit(mutantPeptide, "\\*"))) > 1){ #premature STOP in peptide
+    return("nonsense")
+  }
+
+  return("missense") #if there is a mutant amino acid and it isn't a STOP, it is missense
 }
 
+test_file("../test_detectMutationType.R")
+
 N <- 100000
+
+#create result vectors for the three genes
+KRasMutants <- character()
+OR1A1Mutants <- character()
+PTPN11Mutants <- character()
+
+tic()
+for (i in seq(to=N)){
+  #mutate each gene
+  KRasMutant <- pointMutate(KRascodons)
+  OR1A1Mutant <- pointMutate(OR1A1codons)
+  PTPN11Mutant <- pointMutate(PTPN11codons)
+
+  #track the type of mutation that arises
+  KRasMutants[i] <- detectMutationType(KRascodons, KRasMutant)
+  OR1A1Mutants[i] <- detectMutationType(OR1A1codons, OR1A1Mutant)
+  PTPN11Mutants[i] <- detectMutationType(PTPN11codons, PTPN11Mutant)
+}
+toc()
+beep(2)
+
+#See relative frequency of each mutation type when mutations induced stochastically
+table(KRasMutants)
+table(OR1A1Mutants)
+table(PTPN11Mutants)
+
+
 
