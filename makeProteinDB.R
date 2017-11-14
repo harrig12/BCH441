@@ -12,7 +12,7 @@
 #
 # V 0.1    First code
 
-setwd("./ABC-units")
+setwd("/Users/cait/Documents/BCH441/ABC-units")
 source("./scripts/ABC-createRefDB.R")
 
 myDB <- dbAddProtein(    myDB, fromJSON("/Users/cait/Documents/BCH441/data/MBP1_CLACA.json"))
