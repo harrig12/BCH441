@@ -18,6 +18,6 @@ source("./scripts/ABC-createRefDB.R")
 myDB <- dbAddProtein(    myDB, fromJSON("/Users/cait/Documents/BCH441/data/MBP1_CLACA.json"))
 myDB <- dbAddTaxonomy(   myDB, fromJSON("/Users/cait/Documents/BCH441/data/CLACAtaxonomy.json"))
 myDB <- dbAddAnnotation( myDB, fromJSON("/Users/cait/Documents/BCH441/data/CLACA-Annotations.json"))
-myDB <- dbAddProtein(    myDB, fromJSON("CLACA_APSES_PSI-BLAST.json"))
+myDB <- dbAddProtein(    myDB, fromJSON("/Users/cait/Documents/BCH441/data/CLACA_APSES_PSI-BLAST.json"))
 
 #[END]
