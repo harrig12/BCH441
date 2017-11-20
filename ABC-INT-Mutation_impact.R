@@ -48,11 +48,19 @@ if (! require(Biostrings, quietly=TRUE)) {
   biocLite("Biostrings")
   library(Biostrings)
 }
-
 if (! require(testthat, quietly=TRUE)) {
   install.packages("testthat")
   library(testthat)
 }
+if (! require(beepr, quietly=TRUE)) {
+  install.packages("beepr")
+  library(beepr)
+}
+if (! require(tictoc, quietly=TRUE)) {
+  install.packages("tictoc")
+  library(tictoc)
+}
+
 
 pointMutate <- function(gene){
   # Create a single point mutation in passed gene
@@ -98,20 +106,20 @@ detectMutationType <- function(wt, mutant, code=GENETIC_CODE){
   }
 
   #translate the input DNA sequences
-  wtPeptide <- as.character(translate(DNAString(paste0(wt, collapse = "")),
-                                      genetic.code = code))
-  mutantPeptide <- as.character(translate(DNAString(paste0(mutant, collapse = "")),
-                                          genetic.code = code))
+  wtPeptide <- as.character(translate(DNAString(paste0(wt, collapse="")),
+                                      genetic.code=code))
+  mutantPeptide <- as.character(translate(DNAString(paste0(mutant, collapse="")),
+                                          genetic.code=code))
 
   if (sum(adist(wtPeptide, mutantPeptide)) < 1){ #no mutation in peptide
-    return("silent")
+    return("Silent")
   }
 
   if (length(unlist(strsplit(mutantPeptide, "\\*"))) > 1){ #premature STOP in peptide
-    return("nonsense")
+    return("Nonsense")
   }
 
-  return("missense") #if there is a mutant amino acid and it isn't a STOP, it is missense
+  return("Missense") #if there is a mutant amino acid and it isn't a STOP, it is missense
 }
 
 test_file("../test_detectMutationType.R")
