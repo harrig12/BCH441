@@ -147,9 +147,72 @@ toc()
 beep(2)
 
 #See relative frequency of each mutation type when mutations induced stochastically
-table(KRasMutants)
-table(OR1A1Mutants)
-table(PTPN11Mutants)
+table(KRasMutants)/N
+table(OR1A1Mutants)/N
+table(PTPN11Mutants)/N
+
+#save since it took so long to get these results
+#save(KRasMutants, OR1A1Mutants, PTPN11Mutants, file = "ABC-INT_Mutation_impact_1e5Mutants.R")
+
+#Mutation frequencies by type retrieved from IntOGen November 20 2017
+KRasIntOGenN <- 542
+OR1A1IntOGenN <- 51
+PTPN11IntOGenN <- 82
+
+#Prepare IntOGen mutation frequencies
+mutTypes <- c("Missense", "Silent", "Nonsense")
+
+KRasIntOGenFreq <- c(537, 5, 0)
+KRasIntOGenPercent <- KRasIntOGenFreq / KRasIntOGenN
+names(KRasIntOGenPercent) <- mutTypes
+
+OR1A1IntOGenFreq <- c(30, 18, 3)
+OR1A1IntOGenPercent <- OR1A1IntOGenFreq / OR1A1IntOGenN
+names(OR1A1IntOGenPercent) <- mutTypes
+
+PTPN11IntOGenFreq <- c(67, 12, 3)
+PTPN11IntOGenPercent <- PTPN11IntOGenFreq / PTPN11IntOGenN
+names(PTPN11IntOGenPercent) <- mutTypes
 
 
+#Ensure columns from Random Mutants are in same order as IntOGen data
+
+orderMutationTable <- function(mutationTable){
+  #order columns of passed table such that left to right they read Missense, Silent, Nonsense
+  orderedMutants <- c(mutationTable[names(mutationTable) == "Missense"],
+                      mutationTable[names(mutationTable) == "Silent"],
+                      mutationTable[names(mutationTable) == "Nonsense"])
+  return(orderedMutants)
+}
+
+test_file("test_orderMutationTable.R")
+
+#add generated frequencies
+KRasData <- rbind(KRasIntOGenPercent, orderMutationTable(table(KRasMutants)/N))
+OR1A1Data <- rbind(OR1A1IntOGenPercent, orderMutationTable(table(OR1A1Mutants)/N))
+PTPN11Data <- rbind(PTPN11IntOGenPercent, orderMutationTable(table(PTPN11Mutants)/N))
+
+
+#Create barplots for each gene
+barplot(KRasData,
+        beside = T,
+        main = "KRas mutation types",
+        col = c("green4", "greenyellow"),
+        legend = c("IntOGen Data", "Random Mutant")
+)
+
+
+barplot(OR1A1Data,
+        beside = T,
+        main = "OR1A1 mutation types",
+        col = c("blue", "dodgerblue1"),
+        legend = c("IntOGen Data", "Random Mutant")
+)
+
+barplot(PTPN11Data,
+        beside = T,
+        main = "PTPN11 mutation types",
+        col = c("brown1", "firebrick4"),
+        legend = c("IntOGen Data", "Random Mutant")
+)
 
