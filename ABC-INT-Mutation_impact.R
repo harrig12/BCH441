@@ -67,7 +67,7 @@ pointMutate <- function(gene){
   # Parameters:
   #   gene: a caracter vector of codons
   #
-  # Value: a caracter vector of codons, differing by one letter from the passed gene
+  # Value: The index of the mutated codon, and the new mutant, as a list
 
   iCodon <- sample(length(gene), 1) #choose a codon
   iNT <- sample(3, 1) #choose a nucleotide within the codon to mutate
@@ -79,14 +79,17 @@ pointMutate <- function(gene){
   mutantNT <- sample(nts[nts != myNT], 1) #choose a nucleotide to mutate to
   myCodon[iNT] <- mutantNT #mutate codon
   myCodon <- paste0(myCodon, collapse = "")
-  gene[iCodon] <- myCodon #place mutant codon in gene
-  return(gene)
+
+  ret <- c(iCodon, myCodon)
+  names(ret) <- c("mutantIndex", "mutant")
+
+  return(ret)
 
 }
 
 test_file("../test_pointMutate.R")
 
-detectMutationType <- function(wt, mutant, code=GENETIC_CODE){
+detectMutationType <- function(wtGene, iMutant, mutantCodon, code=GENETIC_CODE){
   # Return whether a mutated sequence is missense, silent, or nonsense
   # Parameters:
   #   wt: a character vector of DNA codons
@@ -96,29 +99,27 @@ detectMutationType <- function(wt, mutant, code=GENETIC_CODE){
   # Value: a string indicating the type of mutation
   #
 
-  if (length(wt) != length(mutant)){
-    stop("input lengths may not differ")
+  if (all(wtGene[iMutant] == mutantCodon)){
+    stop("no mutant found")
   }
 
-  if (all(wt == mutant)){
-    stop("strings match, no mutant found")
-  }
+  #translate the wt and mutant codon
+  wtAA <- as.character(translate(DNAString(wtGene[iMutant]), genetic.code=code))
+  mutantAA <- as.character(translate(DNAString(mutantCodon), genetic.code=code))
 
-  #translate the input DNA sequences
-  wtPeptide <- as.character(translate(DNAString(paste0(wt, collapse="")),
-                                      genetic.code=code))
-  mutantPeptide <- as.character(translate(DNAString(paste0(mutant, collapse="")),
-                                          genetic.code=code))
-
-  if (sum(adist(wtPeptide, mutantPeptide)) < 1){ #no mutation in peptide
+  if (wtAA == mutantAA){ #no mutation in peptide
     return("Silent")
   }
 
-  if (length(unlist(strsplit(mutantPeptide, "\\*"))) > 1){ #premature STOP in peptide
+  if (iMutant != length(wtGene) & mutantAA == "*"){ #premature STOP in peptide
     return("Nonsense")
   }
 
-  return("Missense") #if there is a mutant amino acid and it isn't a STOP, it is missense
+  if (iMutant == length(wtGene) & mutantAA != "*"){ #final STOP codon missing
+    return("Nonsense")
+  }
+
+  return("Missense") #if there is a mutant amino acid and it isn't nonsense, it is missense
 }
 
 test_file("../test_detectMutationType.R")
