@@ -99,7 +99,7 @@ detectMutationType <- function(wtGene, iMutant, mutantCodon, code=GENETIC_CODE){
   # Value: a string indicating the type of mutation
   #
 
-  if (all(wtGene[iMutant] == mutantCodon)){
+  if (wtGene[iMutant] == mutantCodon){
     stop("no mutant found")
   }
 
@@ -124,43 +124,6 @@ detectMutationType <- function(wtGene, iMutant, mutantCodon, code=GENETIC_CODE){
 
 test_file("../test_detectMutationType.R")
 
-mutateAndDetect <- function(gene, code=GENETIC_CODE){
-  # Create a single point mutation in passed gene, and return the type of mutation
-  # Parameters:
-  #   gene: a caracter vector of codons
-  #
-  # Value: char, one of {"Missense", "Silent", "Nonsense"}
-
-  #create point mutation
-  iCodon <- sample(length(gene), 1) #choose a codon
-  iNT <- sample(3, 1) #choose a nucleotide within the codon to mutate
-
-  myCodon <- unlist(strsplit(gene[iCodon], ""))
-  myNT <- myCodon[iNT]
-  nts <- c("A", "T", "C", "G")
-
-  mutantNT <- sample(nts[nts != myNT], 1) #choose a nucleotide to mutate to
-  myCodon[iNT] <- mutantNT #mutate codon
-  myCodon <- paste0(myCodon, collapse = "")
-
-  #detect the type of mutation created
-  if(translate(DNAString(gene[iCodon])) == translate(DNAString(myCodon))){ #no mutation in peptide
-    return("Silent")
-  }
-
-  if(iCodon != length(gene) &
-     translate(DNAString(gene[iCodon])) != translate(DNAString(myCodon))){ #premature STOP in peptide
-    return("Nonsense")
-  }
-
-  if(iCodon == length(gene) & translate(DNAString(myCodon)) != "*"){ #last codon mutated from STOP
-    return("Nonsense")
-  }
-
-  return("Missense") #if there is a mutant amino acid and it isn't nonsense, it is missense
-}
-
-
 set.seed(122234)
 N <- 1e5
 
@@ -177,9 +140,12 @@ for (i in seq(to=N)){
   PTPN11Mutant <- pointMutate(PTPN11codons)
 
   #track the type of mutation that arises
-  KRasMutants[i] <- detectMutationType(KRascodons, KRasMutant)
-  OR1A1Mutants[i] <- detectMutationType(OR1A1codons, OR1A1Mutant)
-  PTPN11Mutants[i] <- detectMutationType(PTPN11codons, PTPN11Mutant)
+  KRasMutants[i] <- detectMutationType(KRascodons, as.integer(KRasMutant["mutantIndex"]),
+                                       KRasMutant["mutant"])
+  OR1A1Mutants[i] <- detectMutationType(OR1A1codons, as.integer(OR1A1Mutant["mutantIndex"]),
+                                        OR1A1Mutant["mutant"])
+  PTPN11Mutants[i] <- detectMutationType(PTPN11codons, as.integer(PTPN11Mutant["mutantIndex"]),
+                                         PTPN11Mutant["mutant"])
 }
 toc()
 beep(2)
@@ -190,7 +156,7 @@ table(OR1A1Mutants)/N
 table(PTPN11Mutants)/N
 
 #save results
-#save(KRasMutants, OR1A1Mutants, PTPN11Mutants, file = "ABC-INT_Mutation_impact_1e5Mutants.R")
+#save(KRasMutants, OR1A1Mutants, PTPN11Mutants, file = "ABC-INT_Mutation_impact_1e5Mutants.RData")
 
 #Mutation frequencies by type retrieved from IntOGen November 20 2017
 KRasIntOGenN <- 542
