@@ -4,23 +4,24 @@
 context("detectMutationType() utility function tests")
 
 test_that("expected input is processed correctly", {
-  expect_equal(detectMutationType("TTT", "TAT"), "missense")
-  expect_equal(detectMutationType("TTT", "TTC"), "silent")
-  expect_equal(detectMutationType(c("TTT", "TGC", "TAA"), c("TTT", "TGA", "TAA") ), "nonsense")
+  expect_equal(detectMutationType(c("TTT", "TGA"), 1, "TAT"), "Missense")
+  expect_equal(detectMutationType(c("TTT", "TGA"), 1, "TTC"), "Silent")
+  expect_equal(detectMutationType(c("TTT", "TGC", "TAA"), 2, "TGA"), "Nonsense")
+  expect_equal(detectMutationType(c("TTT", "TGA"), 2, "TGT"), "Nonsense")
 })
 
 test_that("non-point mutant input is processed correctly", {
-  expect_equal(detectMutationType("TTT", "AAA"), "missense") #triple mutant
-  expect_error(detectMutationType("TTT", "TTT"), "strings match, no mutant found") #no mutant
+  expect_equal(detectMutationType(c("TTT", "TGA"), 1, "AAA"), "Missense") #triple mutant
 })
 
 test_that("genetic code variants input is processed correctly", {
-  expect_equal(detectMutationType("CTA", "CTG", getGeneticCode("12")), "missense")
-  expect_equal(detectMutationType("CTA", "CTT", getGeneticCode("12")), "silent")
-  expect_equal(detectMutationType(c("TTT", "TGC", "TAA"), c("TTT", "TGA", "TAA")), "nonsense")
+  expect_equal(detectMutationType(c("CTA", "TGA"), 1, "CTG", getGeneticCode("12")), "Missense")
+  expect_equal(detectMutationType(c("CTA", "TGA"), 1, "CTT", getGeneticCode("12")), "Silent")
+  expect_equal(detectMutationType(c("TTT", "TGC", "TAA"), 2, "TGA", getGeneticCode("12")), "Nonsense")
+  expect_equal(detectMutationType(c("TTT", "TGC", "TAA"), 2, "TGA", getGeneticCode("3")), "Missense")
 })
 
 test_that("incorrect input throws error", {
-  expect_error(detectMutationType(c("TTT", "AAA"), "AAA"), "input lengths may not differ")
+  expect_error(detectMutationType(c("TTT", "AAA"), 2, "AAA"), "no mutant found")
 })
 
