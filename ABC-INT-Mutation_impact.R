@@ -128,9 +128,10 @@ set.seed(122234)
 N <- 1e5
 
 #create result vectors for the three genes
-KRasMutants <- character()
-OR1A1Mutants <- character()
-PTPN11Mutants <- character()
+KRasMutants <- c(0,0,0)
+OR1A1Mutants <- c(0,0,0)
+PTPN11Mutants <- c(0,0,0)
+names(KRasMutants) <- names(OR1A1Mutants) <- names(PTPN11Mutants) <- c("Missense", "Silent", "Nonsense")
 
 tic()
 for (i in seq(to=N)){
@@ -140,12 +141,17 @@ for (i in seq(to=N)){
   PTPN11Mutant <- pointMutate(PTPN11codons)
 
   #track the type of mutation that arises
-  KRasMutants[i] <- detectMutationType(KRascodons, as.integer(KRasMutant["mutantIndex"]),
+  KRasMutantType <- detectMutationType(KRascodons, as.integer(KRasMutant["mutantIndex"]),
                                        KRasMutant["mutant"])
-  OR1A1Mutants[i] <- detectMutationType(OR1A1codons, as.integer(OR1A1Mutant["mutantIndex"]),
+  OR1A1MutantType <- detectMutationType(OR1A1codons, as.integer(OR1A1Mutant["mutantIndex"]),
                                         OR1A1Mutant["mutant"])
-  PTPN11Mutants[i] <- detectMutationType(PTPN11codons, as.integer(PTPN11Mutant["mutantIndex"]),
+  PTPN11MutantType <- detectMutationType(PTPN11codons, as.integer(PTPN11Mutant["mutantIndex"]),
                                          PTPN11Mutant["mutant"])
+  #increase counters
+  KRasMutants[KRasMutantType] <- KRasMutants[KRasMutantType] + 1
+  OR1A1Mutants[OR1A1MutantType] <- OR1A1Mutants[OR1A1MutantType] + 1
+  PTPN11Mutants[PTPN11MutantType] <- PTPN11Mutants[PTPN11MutantType] + 1
+
 }
 toc()
 beep(2)
