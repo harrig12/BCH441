@@ -78,7 +78,6 @@ pointMutate <- function(gene){
 
   mutantNT <- sample(nts[nts != myNT], 1) #choose a nucleotide to mutate to
   myCodon[iNT] <- mutantNT #mutate codon
-
   myCodon <- paste0(myCodon, collapse = "")
   gene[iCodon] <- myCodon #place mutant codon in gene
   return(gene)
@@ -124,7 +123,45 @@ detectMutationType <- function(wt, mutant, code=GENETIC_CODE){
 
 test_file("../test_detectMutationType.R")
 
-N <- 100000
+mutateAndDetect <- function(gene, code=GENETIC_CODE){
+  # Create a single point mutation in passed gene, and return the type of mutation
+  # Parameters:
+  #   gene: a caracter vector of codons
+  #
+  # Value: char, one of {"Missense", "Silent", "Nonsense"}
+
+  #create point mutation
+  iCodon <- sample(length(gene), 1) #choose a codon
+  iNT <- sample(3, 1) #choose a nucleotide within the codon to mutate
+
+  myCodon <- unlist(strsplit(gene[iCodon], ""))
+  myNT <- myCodon[iNT]
+  nts <- c("A", "T", "C", "G")
+
+  mutantNT <- sample(nts[nts != myNT], 1) #choose a nucleotide to mutate to
+  myCodon[iNT] <- mutantNT #mutate codon
+  myCodon <- paste0(myCodon, collapse = "")
+
+  #detect the type of mutation created
+  if(translate(DNAString(gene[iCodon])) == translate(DNAString(myCodon))){ #no mutation in peptide
+    return("Silent")
+  }
+
+  if(iCodon != length(gene) &
+     translate(DNAString(gene[iCodon])) != translate(DNAString(myCodon))){ #premature STOP in peptide
+    return("Nonsense")
+  }
+
+  if(iCodon == length(gene) & translate(DNAString(myCodon)) != "*"){ #last codon mutated from STOP
+    return("Nonsense")
+  }
+
+  return("Missense") #if there is a mutant amino acid and it isn't nonsense, it is missense
+}
+
+
+set.seed(122234)
+N <- 1e5
 
 #create result vectors for the three genes
 KRasMutants <- character()
@@ -151,7 +188,7 @@ table(KRasMutants)/N
 table(OR1A1Mutants)/N
 table(PTPN11Mutants)/N
 
-#save since it took so long to get these results
+#save results
 #save(KRasMutants, OR1A1Mutants, PTPN11Mutants, file = "ABC-INT_Mutation_impact_1e5Mutants.R")
 
 #Mutation frequencies by type retrieved from IntOGen November 20 2017
