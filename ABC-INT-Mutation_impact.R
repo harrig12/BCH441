@@ -59,7 +59,8 @@ pointMutate <- function(gene){
   # Parameters:
   #   gene: a caracter vector of codons
   #
-  # Value: The index of the mutated codon, and the new mutant, as a list
+  # Note: Does not directly modify passed gene
+  # Value: The index of the mutated codon, and the new mutant, as a character array
 
   iCodon <- sample(length(gene), 1) #choose a codon
   iNT <- sample(3, 1) #choose a nucleotide within the codon to mutate
@@ -82,10 +83,11 @@ pointMutate <- function(gene){
 #test_file("../test_pointMutate.R")
 
 detectMutationType <- function(wtGene, iMutant, mutantCodon, code=GENETIC_CODE){
-  # Return whether a mutated sequence is missense, silent, or nonsense
+  # Return whether a sequence mutation is missense, silent, or nonsense
   # Parameters:
-  #   wt: a character vector of DNA codons
-  #   mutant: a chracter vector of codons
+  #   wtGene: a character vector of codons
+  #   iMutant: the index of mutated codon
+  #   mutantCodon: the mutant verson of the codon at index iMutant
   #   code: an optional reference genetic code
   #
   # Value: a string indicating the type of mutation
