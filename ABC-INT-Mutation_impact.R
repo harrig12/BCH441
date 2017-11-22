@@ -217,6 +217,9 @@ chisq.test(rbind(KRasIntOGenFreq, OR1A1IntOGenFreq)) #significant difference
 chisq.test(rbind(OR1A1IntOGenFreq, PTPN11IntOGenFreq)) #no significant difference
 chisq.test(rbind(KRasIntOGenFreq, PTPN11IntOGenFreq)) #significant difference
 
+chisq.test(rbind(KRasIntOGenFreq, table(KRasMutants))) #significant difference
+chisq.test(rbind(OR1A1IntOGenFreq, table(OR1A1Mutants))) #significant difference
+chisq.test(rbind(PTPN11IntOGenFreq, table(PTPN11Mutants))) #significant difference
 
 #Compare PTPN11 to OR1A1 and KRas directly
 IntOGenData <- rbind(KRasIntOGenPercent, OR1A1IntOGenPercent, PTPN11IntOGenPercent)
