@@ -79,7 +79,7 @@ pointMutate <- function(gene){
 
 }
 
-test_file("../test_pointMutate.R")
+#test_file("../test_pointMutate.R")
 
 detectMutationType <- function(wtGene, iMutant, mutantCodon, code=GENETIC_CODE){
   # Return whether a mutated sequence is missense, silent, or nonsense
@@ -114,7 +114,7 @@ detectMutationType <- function(wtGene, iMutant, mutantCodon, code=GENETIC_CODE){
   return("Missense") #if there is a mutant amino acid and it isn't nonsense, it is missense
 }
 
-test_file("../test_detectMutationType.R")
+#test_file("../test_detectMutationType.R")
 
 set.seed(122234)
 N <- 1e5
@@ -216,7 +216,7 @@ IntOGenData <- rbind(KRasIntOGenPercent, OR1A1IntOGenPercent, PTPN11IntOGenPerce
 
 barplot(IntOGenData,
         beside = T,
-        main = "IntOGen alone",
+        main = "IntOGen Mutation Frequencies",
         legend = c("KRas", "OR1A1", "PTPN11")
 )
 
