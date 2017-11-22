@@ -184,24 +184,10 @@ PTPN11IntOGenFreq <- c(67, 12, 3)
 PTPN11IntOGenPercent <- PTPN11IntOGenFreq / PTPN11IntOGenN
 names(PTPN11IntOGenPercent) <- mutTypes
 
-
-#Ensure columns from Random Mutants are in same order as IntOGen data
-
-orderMutationTable <- function(mutationTable){
-  #order columns of passed table such that left to right they read Missense, Silent, Nonsense
-  orderedMutants <- c(mutationTable[names(mutationTable) == "Missense"],
-                      mutationTable[names(mutationTable) == "Silent"],
-                      mutationTable[names(mutationTable) == "Nonsense"])
-  return(orderedMutants)
-}
-
-test_file("test_orderMutationTable.R")
-
 #add generated frequencies
 KRasData <- rbind(KRasIntOGenPercent, orderMutationTable(table(KRasMutants)/N))
 OR1A1Data <- rbind(OR1A1IntOGenPercent, orderMutationTable(table(OR1A1Mutants)/N))
 PTPN11Data <- rbind(PTPN11IntOGenPercent, orderMutationTable(table(PTPN11Mutants)/N))
-
 
 #Create barplots for each gene
 barplot(KRasData,
@@ -225,4 +211,11 @@ barplot(PTPN11Data,
         col = c("brown1", "firebrick4"),
         legend = c("IntOGen Data", "Random Mutant")
 )
+
+#Look for significance between groups
+chisq.test(KRasData)
+chisq.test(OR1A1Data)
+chisq.test(PTPN11Data)
+
+#Compare PTPN11 to OR1A1 and KRas directly
 
