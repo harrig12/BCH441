@@ -213,9 +213,18 @@ barplot(PTPN11Data,
 )
 
 #Look for significance between groups
-chisq.test(KRasData)
-chisq.test(OR1A1Data)
-chisq.test(PTPN11Data)
+chisq.test(rbind(KRasIntOGenFreq, OR1A1IntOGenFreq)) #significant difference
+chisq.test(rbind(OR1A1IntOGenFreq, PTPN11IntOGenFreq)) #no significant difference
+chisq.test(rbind(KRasIntOGenFreq, PTPN11IntOGenFreq)) #significant difference
+
 
 #Compare PTPN11 to OR1A1 and KRas directly
+IntOGenData <- rbind(KRasIntOGenPercent, OR1A1IntOGenPercent, PTPN11IntOGenPercent)
+
+barplot(IntOGenData,
+        beside = T,
+        main = "IntOGen alone",
+        legend = c("KRas", "OR1A1", "PTPN11")
+)
+
 
