@@ -185,9 +185,9 @@ PTPN11IntOGenPercent <- PTPN11IntOGenFreq / PTPN11IntOGenN
 names(PTPN11IntOGenPercent) <- mutTypes
 
 #add generated frequencies
-KRasData <- rbind(KRasIntOGenPercent, orderMutationTable(table(KRasMutants)/N))
-OR1A1Data <- rbind(OR1A1IntOGenPercent, orderMutationTable(table(OR1A1Mutants)/N))
-PTPN11Data <- rbind(PTPN11IntOGenPercent, orderMutationTable(table(PTPN11Mutants)/N))
+KRasData <- rbind(KRasIntOGenPercent, (table(KRasMutants)/N))
+OR1A1Data <- rbind(OR1A1IntOGenPercent, (table(OR1A1Mutants)/N))
+PTPN11Data <- rbind(PTPN11IntOGenPercent, (table(PTPN11Mutants)/N))
 
 #Create barplots for each gene
 barplot(KRasData,
