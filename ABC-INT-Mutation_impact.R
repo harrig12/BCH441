@@ -52,14 +52,6 @@ if (! require(testthat, quietly=TRUE)) {
   install.packages("testthat")
   library(testthat)
 }
-if (! require(beepr, quietly=TRUE)) {
-  install.packages("beepr")
-  library(beepr)
-}
-if (! require(tictoc, quietly=TRUE)) {
-  install.packages("tictoc")
-  library(tictoc)
-}
 
 
 pointMutate <- function(gene){
@@ -133,7 +125,6 @@ OR1A1Mutants <- c(0,0,0)
 PTPN11Mutants <- c(0,0,0)
 names(KRasMutants) <- names(OR1A1Mutants) <- names(PTPN11Mutants) <- c("Missense", "Silent", "Nonsense")
 
-tic()
 for (i in seq(to=N)){
   #mutate each gene
   KRasMutant <- pointMutate(KRascodons)
@@ -153,8 +144,6 @@ for (i in seq(to=N)){
   PTPN11Mutants[PTPN11MutantType] <- PTPN11Mutants[PTPN11MutantType] + 1
 
 }
-toc()
-beep(2)
 
 #See relative frequency of each mutation type when mutations induced stochastically
 table(KRasMutants)/N
