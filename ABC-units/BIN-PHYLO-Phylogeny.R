@@ -125,5 +125,9 @@ apsTreeFast <- Rprotpars(apsIn, path=PROTPARSPATH)
 toc()
 save(apsTreeFast, file = "allAPSEStreeRprotpars.RData")
 
+apsTreeFastRooted <- root(apsTreeFast, outgroup = "KILA_ESCCO", resolve.root=T)
 
-plot(apsTreeFast)
+plot.multiPhylo(apsTreeFastRooted, cex = 0.5)
+
+
+
