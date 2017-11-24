@@ -1,4 +1,6 @@
 library(msa)
+library(tictoc)
+library(beepr)
 source("../makeProteinDB.R")
 
 if (!require(Rphylip, quietly=TRUE)) {
@@ -107,18 +109,21 @@ writeMFA(allAPSESphyloSet, myCon = "allAPSESphyloSet.mfa")
 #------------------------------------------------------------------------------
 #Build the tree, as in BIN-PHYLO-Tree_building.R (with some modifications)
 
-PROMLPATH <- "/Applications/phylip-3.695/exe/proml.app/Contents/MacOS"
+PROTPARSPATH <- "/Applications/phylip-3.695/exe/protpars.app/Contents/MacOS"
 
 # Confirm that the settings are right.
-PROMLPATH                # returns the path
-list.dirs(PROMLPATH)     # returns the directories in that path
-list.files(PROMLPATH)    # lists the files [1] "proml"   "proml.command"
+PROTPARSPATH                # returns the path
+list.dirs(PROTPARSPATH)     # returns the directories in that path
+list.files(PROTPARSPATH)    # lists the files [1] "proml"   "proml.command"
 
 #read in alignment
-apsIn <- read.protein("allAPSESphyloSet.mfa")
+apsIn <- read.protein("ABC-units/allAPSESphyloSet.mfa")
 
 #build the tree
-apsTree <- Rproml(apsIn, path=PROMLPATH)
-save(apsTree, file = "allAPSEStreeRproml.RData")
+tic()
+apsTreeFast <- Rprotpars(apsIn, path=PROTPARSPATH)
+toc()
+save(apsTreeFast, file = "allAPSEStreeRprotpars.RData")
 
-plot(apsTree)
+
+plot(apsTreeFast)
